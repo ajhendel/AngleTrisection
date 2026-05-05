@@ -1,0 +1,17 @@
+name = "AngleTrisection"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["AngleTrisection"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.29.1"
+
+[[lean_lib]]
+name = "AngleTrisection"

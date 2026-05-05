@@ -1,0 +1,4 @@
+/.lake/
+/build/
+/lake-packages/
+.DS_Store
