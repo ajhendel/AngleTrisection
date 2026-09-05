@@ -13,25 +13,25 @@ import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.NormNum
 
 /-!
-# Freek #8: Impossibility of Trisecting the Angle and Doubling the Cube
+# Degree obstructions motivated by trisection and cube doubling
 
-The classical impossibility results: no straightedge-and-compass construction can trisect
-a 60° angle or double the cube. The proof is algebraic (Wantzel 1837): constructible numbers
-have minimal polynomial degree dividing `2^n`, while the relevant polynomials have degree 3.
-
-* <https://www.cs.ru.nl/~freek/100/> (entry #8)
+We exclude roots of two cubic polynomials from intermediate fields of real
+numbers having power-of-two degree over the rationals. The historical predicate
+name `IsConstructible` refers only to that algebraic condition. This file does
+not formalize geometric constructions or their connection to the predicate.
+See README.md for the exact scope and missing geometric bridge.
 -/
 
 noncomputable section
 
 open Polynomial
 
-/-- A real number is constructible if it lies in an intermediate field `K` of `ℝ/ℚ`
-with `[K : ℚ]` a power of 2 (Wantzel's algebraic characterization). -/
+/-- Membership in an intermediate field of power-of-two degree.
+The name is historical; equivalence to geometric constructibility is not claimed. -/
 def IsConstructible (α : ℝ) : Prop :=
   ∃ (K : IntermediateField ℚ ℝ), α ∈ K ∧ ∃ n : ℕ, Module.finrank ℚ K = 2 ^ n
 
-/-- If `α` is constructible and algebraic, its minimal polynomial degree divides `2^n`. -/
+/-- If `α` satisfies the local field-degree predicate and is algebraic, its minimal polynomial degree divides `2^n`. -/
 theorem IsConstructible.minpoly_natDegree_dvd_two_pow {α : ℝ} (hc : IsConstructible α)
     (_halg : IsAlgebraic ℚ α) : ∃ n : ℕ, (minpoly ℚ α).natDegree ∣ 2 ^ n := by
   obtain ⟨K, hαK, n, hK⟩ := hc
@@ -54,7 +54,7 @@ private theorem Rat.cube_ne_two : ∀ b : ℚ, b ^ 3 ≠ 2 := by
   exact Rat.not_irrational b (irrational_nrt_of_n_not_dvd_multiplicity 3
     (by norm_num : (2 : ℤ) ≠ 0) 2 (by exact_mod_cast hb) (by simp [multiplicity_self]))
 
-/-- No constructible real satisfies `α³ = 2`. -/
+/-- A real root of `x³ = 2` fails the local field-degree predicate. -/
 theorem not_constructible_cubeRoot_two {α : ℝ} (hα : α ^ 3 = 2) : ¬IsConstructible α := by
   intro hc
   have haeval : aeval α (X ^ 3 - C (2 : ℚ)) = 0 := by
@@ -90,7 +90,8 @@ private theorem trisectionPoly_irreducible : Irreducible trisectionPoly := by
     have : a ∣ a ^ 3 - 3 * a := ⟨a ^ 2 - 3, by ring⟩; rwa [h1] at this
   rcases Int.isUnit_iff.mp (isUnit_of_dvd_one this) with rfl | rfl <;> omega
 
-/-- No constructible real satisfies `α³ - 3α - 1 = 0`. -/
+/-- A real root of `x³ - 3x - 1 = 0` fails the local field-degree predicate.
+The connection to trigonometry and geometric construction is not formalized here. -/
 theorem not_constructible_trisection {α : ℝ} (hα : α ^ 3 - 3 * α - 1 = 0) :
     ¬IsConstructible α := by
   intro hc
